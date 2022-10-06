@@ -1,12 +1,64 @@
 #!/bin/bash
 
-path=$(pwd)
-mkdir "$path/src"
-mkdir "$path/src/master"
-git clone --single-branch --branch master git@github.com:odoo/support-tools.git
-cd src/master/
-for i in "odoo" "enterprise" "design-themes"
+home_matching="$HOME/.*$"
+if ! [[ "$(pwd)" =~ $home_matching ]]; then
+	echo "Please execute in a subdirectory of $HOME"
+	exit 1
+fi
+
+# Disclaimer
+echo "Some command will require root privilege or user interaction (installing git or python and its libraries)"
+
+
+# Check for git installation
+git_matching="git version.*$"
+if ! [[ "$(git --version)" =~ $git_matching ]]; then
+	sudo apt install git
+fi
+
+# Checking for python installation
+py3_matching="Python 3.*$"
+if ! [[ "$(python3 --version)" =~ $py3_matching ]]; then
+	sudo apt install python3
+fi
+
+# Checking for python installation
+psql_matching="psql \(PostgreSQL\).*$"
+if ! [[ "$(psql --version)" =~ $psql_matching ]]; then
+	sudo apt install postgresql postgresql-client
+fi
+
+# Paths
+odoohome=$(pwd)
+worktreesrc="$odoohome/src/master"
+
+# Cloning and configuring odoo/support-tools
+git clone --branch "master" git@github.com:odoo/support-tools.git
+cd "$odoohome/support-tools"
+sudo pip3 install -r "requirements.txt"
+
+# Cloning odoo/internal
+git clone --branch "master" git@github.com:odoo/internal.git
+$odoohome/support-tools/oe-support.py config internal "$odoohome/internal"
+
+### Creating multiverse worktree
+mkdir -p $worktreesrc
+$odoohome/support-tools/oe-support.py config worktree-src "$worktreesrc"
+cd $worktreesrc
+
+# Cloning odoo/odoo, odoo/enterprise, odoo/design-themes, odoo/upgrade master branches
+for i in "odoo" "enterprise" "design-themes" "upgrade"
 do
-	git clone --single-branch --branch master "git@github.com:odoo/$i.git"
+	git clone --branch "master" "git@github.com:odoo/$i.git"
+	if [[ $i =~ (odoo|upgrade)$ ]]; then
+		pushd "$i"
+		sudo pip3 install -r "requirements.txt"
+		popd
+	fi
 done
-cd ../../
+
+# Exporting src path in ~/.bashrc
+if [ -z ${MULTIVERSEPATH+x} ]; then
+	echo "export MULTIVERSPATH=\"$odoohome/src\"" >> $HOME/.bashrc
+	source "$HOME/.bashrc"
+fi
