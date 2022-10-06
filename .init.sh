@@ -35,9 +35,11 @@ worktreesrc="$odoohome/src/master"
 # Cloning and configuring odoo/support-tools
 git clone --branch "master" git@github.com:odoo/support-tools.git
 cd "$odoohome/support-tools"
-sudo pip3 install -r "requirements.txt"
+# Check if requirements are met, else install them.
+python3 -c "import pkg_resources; pkg_resources.require(open('requirements.txt',mode='r'))" || sudo pip3 install -r "requirements.txt" # https://stackoverflow.com/a/65606063
 
 # Cloning odoo/internal
+cd "$odoohome"
 git clone --branch "master" git@github.com:odoo/internal.git
 $odoohome/support-tools/oe-support.py config internal "$odoohome/internal"
 
@@ -50,9 +52,11 @@ cd $worktreesrc
 for i in "odoo" "enterprise" "design-themes" "upgrade"
 do
 	git clone --branch "master" "git@github.com:odoo/$i.git"
+
+	# Check if requirements dor odoo and upgrade are met, else install them.
 	if [[ $i =~ (odoo|upgrade)$ ]]; then
 		pushd "$i"
-		sudo pip3 install -r "requirements.txt"
+		python3 -c "import pkg_resources; pkg_resources.require(open('requirements.txt',mode='r'))" || sudo pip3 install -r "requirements.txt"
 		popd
 	fi
 done

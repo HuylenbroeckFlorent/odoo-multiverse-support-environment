@@ -16,6 +16,8 @@ if [ "$#" -ne 2  ]; then
     exit 1
 fi
 
+cd "$MULTIVERSEPATH/$2" || exit 1
+
 echo "Copying database $1 to $1-$2"
 
 # Drop database if it exists then (re-)create it.
