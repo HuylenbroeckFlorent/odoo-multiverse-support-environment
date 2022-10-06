@@ -6,4 +6,4 @@ Run ```.add-version.s <space-separated-version-names>``` to add some specific ve
   
 Run ```.migrate <database> <target-version-name>``` to migrate a database to a given version.
 
-Run ```.add-version.sh $(cat currently_supported_versions.txt)``` to install all currently supported versions.
+Run ```.add-version.sh $(cat currently_supported_versions.txt)``` to install all currently used versions.
