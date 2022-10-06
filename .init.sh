@@ -7,7 +7,7 @@ if ! [[ "$(pwd)" =~ $home_matching ]]; then
 fi
 
 # Disclaimer
-echo "Some command will require root privilege or user interaction (installing git or python and its libraries)"
+echo "Some command will require root privilege or user interaction (installing git, psql or python and its libraries)"
 
 
 # Check for git installation
@@ -22,7 +22,7 @@ if ! [[ "$(python3 --version)" =~ $py3_matching ]]; then
 	sudo apt install python3
 fi
 
-# Checking for python installation
+# Checking for psql installation
 psql_matching="psql \(PostgreSQL\).*$"
 if ! [[ "$(psql --version)" =~ $psql_matching ]]; then
 	sudo apt install postgresql postgresql-client
