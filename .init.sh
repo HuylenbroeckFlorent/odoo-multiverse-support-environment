@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Ensure we create multiverse inside user's home
 home_matching="$HOME/.*$"
 if ! [[ "$(pwd)" =~ $home_matching ]]; then
 	echo "Please execute in a subdirectory of $HOME"
@@ -61,8 +62,8 @@ do
 	fi
 done
 
-# Exporting src path in ~/.bashrc
-if [ -z ${MULTIVERSEPATH+x} ]; then
-	echo "export MULTIVERSPATH=\"$odoohome/src\"" >> $HOME/.bashrc
-	source "$HOME/.bashrc"
-fi
+sed -i "/export ODOOHOME=.*/d" $ODOOHOME/utils/.multiverserc
+echo "export ODOOHOME=$ODOOHOME" >> $ODOOHOME/utils/.multiverserc
+sed -i '/source.*multiverserc/d' $HOME/.bashrc
+echo "source $ODOOHOME/utils/.multiverserc" >> $HOME/.bashrc
+source $HOME/.bashrc

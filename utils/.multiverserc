@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# cde, cdo, oe-odoo-bin and this file are based on BIB's scripts.
+
+# Useful aliases
+alias oe-migrate="bash $ODOOHOME/utils/.migrate.sh"
+alias oe-odoo-bin="bash $ODOOHOME/utils/.odoo-bin.sh"
+alias oe-add-version="bash $ODOOHOME/utils/.add-version.sh"
+alias oe-init-all-versions="bash $ODOOHOME/utils/.add-version.sh $(cat $ODOOHOME/utils/currently_used_versions.txt)"
+
+# Run support-tools
+oe-s() {
+    $ODOOHOME/oe-support.py "$@"
+}
+
+# cd to given version's odoo directory
+cdo() {
+    if [ "$#" -ne 1  ]; then
+        echo "Illegal number of parameters"
+        return
+    fi
+    cd "$MULTIVERSEPATH/$1/odoo"
+}
+
+# cd to given version's enterprise directory
+cde() {
+    if [ "$#" -ne 1  ]; then
+        echo "Illegal number of parameters"
+        return
+    fi
+    cd "$MULTIVERSEPATH/$1/enterprise"
+}
+
+# Help
+oe-help() {
+    echo "To change directory to any version's odoo/enterprise directory:"
+    echo "cdo <version>"
+    echo "cde <version>"
+    echo 
+    echo "To run support-tools:"
+    echo "oe-s <args>"
+    echo 
+    echo "To run any odoo-bin:"
+    echo "oe-odoo-bin <version> <args>"
+    echo 
+    echo "To run a specific odoo-bin version from within its odoo directory:"
+    echo "oe-odoo-bin <args>"
+    echo 
+    echo "To add one/multiple versions of odoo to multiverse setup:"
+    echo "oe-add-version <version 1> ... <version n>"
+    echo
+    echo "To add all used versions at once:"
+    echo "oe-init-all-versions"
+    echo 
+    echo "To migrate a database to another version of Odoo"
+    echo "oe-migrate <database> <target-version>"
+}
+
+export MULTIVERSEPATH="$ODOOHOME/src"
+export ODOOHOME=/home/florent/odoo

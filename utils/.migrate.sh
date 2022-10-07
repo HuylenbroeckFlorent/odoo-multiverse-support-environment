@@ -4,15 +4,15 @@
 
 # Check for $MULTIVERSEPATH in ~/.bashrc
 if [ -z ${MULTIVERSEPATH+x} ]; then
-    echo "\$MULTIVERSEPATH not found in $HOME/.bashrc, please append \"export \$MULTIVERSEPATH=<path-to-src>\" to $HOME/.bashrc and run 'source $HOME/.bashrc'"
+    echo "\$MULTIVERSEPATH not found in $HOME/.bashrc, please run .init.sh"
     exit 1
 fi
 
 # Check args
 if [ "$#" -ne 2  ]; then
-    echo ".migrate: Create a duplicate of <database> called <database-target_version> and migrate it to the target version."
+    echo "oemigrate: Create a duplicate of <database> called <database-target_version> and migrate it to the target version."
     echo ""
-    echo "Usage: .migrate <database> <target_version>"
+    echo "Usage: oemigrate <database> <target_version>"
     exit 1
 fi
 
