@@ -10,7 +10,7 @@ alias oe-init-all-versions="bash $ODOOHOME/utils/.add-version.sh $(cat $ODOOHOME
 
 # Run support-tools
 oe-s() {
-    $ODOOHOME/oe-support.py "$@"
+    $ODOOHOME/support-tools/oe-support.py "$@"
 }
 
 # cd to given version's odoo directory
