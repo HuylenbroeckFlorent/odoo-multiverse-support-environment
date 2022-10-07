@@ -1,4 +1,4 @@
-# odoo-init-support-env
+# Odoo multiverse support environment
 
 Run ```.init.sh``` to set-up multiverse.
 
