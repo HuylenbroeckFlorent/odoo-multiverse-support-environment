@@ -28,6 +28,10 @@ psql_matching="psql \(PostgreSQL\).*$"
 if ! [[ "$(psql --version)" =~ $psql_matching ]]; then
 	sudo apt install postgresql postgresql-client
 fi
+if ! [[ "$(psql postgres -tAc "SELECT * FROM pg_roles WHERE rolname='$USER'")" =~ ^"$USER"\|t\|t\|(t|f|)\|t\|t\|(t|f|)\|(-?[0-9]*|)\|\**\|(t|f|)\|(t|f|)\|(t|f|)\|([0-9]*|)$ ]]; then
+	sudo -u postgres psql -U postgres -c "CREATE USER $USER;"
+	sudo -u postgres psql -U postgres -c "ALTER USER $USER SUPERUSER CREATEDB INHERIT LOGIN"
+fi
 
 # Paths
 odoohome=$(pwd)
@@ -47,6 +51,7 @@ $odoohome/support-tools/oe-support.py config internal "$odoohome/internal"
 ### Creating multiverse worktree
 mkdir -p $worktreesrc
 $odoohome/support-tools/oe-support.py config worktree-src "$worktreesrc"
+$odoohome/support-tools/oe-support.py config src "$odoohome/src"
 cd $worktreesrc
 
 # Cloning odoo/odoo, odoo/enterprise, odoo/design-themes, odoo/upgrade master branches
@@ -62,8 +67,8 @@ do
 	fi
 done
 
-sed -i "/export ODOOHOME=.*/d" $ODOOHOME/utils/.multiverserc
-echo "export ODOOHOME=$ODOOHOME" >> $ODOOHOME/utils/.multiverserc
+sed -i "/export ODOOHOME=.*/d" $HOME/.bashrc
 sed -i '/source.*multiverserc/d' $HOME/.bashrc
-echo "source $ODOOHOME/utils/.multiverserc" >> $HOME/.bashrc
+echo "export ODOOHOME=$odoohome" >> $HOME/.bashrc
+echo "source $odoohome/utils/.multiverserc" >> $HOME/.bashrc
 source $HOME/.bashrc
