@@ -6,14 +6,15 @@ if [ -z ${MULTIVERSEPATH+x} ]; then
     exit 1
 fi
 
-if [[ "$(pwd)" =~ "$MULTIVERSEPATH"/(saas-)?[0-9]+(.[0-9])?/odoo ]]; then
+if [[ $# -gt 0 ]] && [[ $1 =~ (saas-)?[0-9]+(.[0-9])? ]] && [[ "$(ls $MULTIVERSEPATH)" =~ ^.*"$1".*$ ]]; then
+    version="$1"
+    args="${@:2}"
+
+elif [[ "$(pwd)" =~ "$MULTIVERSEPATH"/(saas-)?[0-9]+(.[0-9])?/odoo ]]; then
 	version=$(pwd)
     version=${version##$MULTIVERSEPATH/}
     version=${version%%/*}
     args="$@"
-elif [[ "$(ls $MULTIVERSEPATH)" =~ ^.*"$1".*$ ]]; then
-    version="$1"
-    args="${@:2}"
 else
     echo "Usage:"
     echo "From outside of any version's odoo directory:"
