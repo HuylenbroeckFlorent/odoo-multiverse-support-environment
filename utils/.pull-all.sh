@@ -6,7 +6,13 @@ if [ -z ${MULTIVERSEPATH+x} ]; then
     exit 1
 fi
 
-for repo in $(find $ODOOHOME -mindepth 2 -name ".git")
+for repo in $(find $ODOOHOME -mindepth 2 -name ".git" | sort)
 do
-	git -C "${repo%".git"}" pull
+	stripped_repo=${repo%."git"}
+	if [[ $stripped_repo =~ "$MULTIVERSEPATH".*$ ]]; then
+		echo "Pulling $(basename $(dirname $stripped_repo))/$(basename $stripped_repo)"
+	else
+		echo "Pulling $(basename $stripped_repo)"
+	fi
+	git -C "$stripped_repo" pull > /dev/null
 done
