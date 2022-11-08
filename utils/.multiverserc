@@ -59,6 +59,9 @@ oe-help() {
     echo 
     echo "To migrate a database to another version of Odoo"
     echo "oe-migrate <database> <target-version>"
+    echo 
+    echo "To pull all your repositories (src/*, internal/, support-tools/"
+    echo "oe-pull"
 }
 
 export MULTIVERSEPATH="$ODOOHOME/src"
