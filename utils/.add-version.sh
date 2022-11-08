@@ -19,6 +19,7 @@ do
     git -C "$MULTIVERSEPATH/master/$i" worktree prune
 done
 
+# Add branch to worktree
 for version in "$@"
 do
     mkdir -p "$MULTIVERSEPATH/$version"

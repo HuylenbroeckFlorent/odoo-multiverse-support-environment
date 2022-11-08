@@ -6,6 +6,7 @@
 alias oe-migrate="bash $ODOOHOME/utils/.migrate.sh"
 alias oe-odoo-bin="bash $ODOOHOME/utils/.odoo-bin.sh"
 alias oe-add-version="bash $ODOOHOME/utils/.add-version.sh"
+alias oe-rm-version="bash $ODOOHOME/utils/.remove-version.sh"
 alias oe-init-all-versions="bash $ODOOHOME/utils/.add-version.sh $(cat $ODOOHOME/utils/currently_used_versions.txt)"
 alias oe-pull="bash $ODOOHOME/utils/.pull-all.sh"
 
@@ -52,6 +53,9 @@ oe-help() {
     echo
     echo "To add all used versions at once:"
     echo "oe-init-all-versions"
+    echo 
+    echo "To remove one/multiple versions of odoo from multiverse setup:"
+    echo "oe-rm-version <version 1> ... <version n>"
     echo 
     echo "To migrate a database to another version of Odoo"
     echo "oe-migrate <database> <target-version>"

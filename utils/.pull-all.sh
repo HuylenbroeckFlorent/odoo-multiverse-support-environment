@@ -6,7 +6,7 @@ if [ -z ${MULTIVERSEPATH+x} ]; then
     exit 1
 fi
 
-for repo in $(find $ODOOHOME -mindepth 2 -name ".git")
+for repo in $(find $ODOOHOME -mindepth 2 -name ".git") # mindepth 2 to avoid finding its own .git
 do
 	git -C "${repo%".git"}" pull
 done
