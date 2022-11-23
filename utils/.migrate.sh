@@ -18,7 +18,9 @@ fi
 
 cd "$MULTIVERSEPATH/$2" || exit 1
 
-echo "Copying database $1 to $1-$2"
+vnumber=${2%%".0"}
+
+echo "Copying database $1 to $1-$vnumber"
 
 # Drop database if it exists then (re-)create it.
 dropdb "$1-$2" 2> /dev/null
@@ -29,7 +31,7 @@ rm -f "$MULTIVERSEPATH/$2/odoo/odoo/addons/base/maintenance"
 ln -s "$MULTIVERSEPATH/master/upgrade/" "$MULTIVERSEPATH/$2/odoo/odoo/addons/base/maintenance"
 
 # Migrate the db.
-$MULTIVERSEPATH/$2/odoo/odoo-bin -d "$1-$2" -u all --addons-path=$MULTIVERSEPATH/$2/odoo/addons,$MULTIVERSEPATH/$2/enterprise,$MULTIVERSEPATH/$2/design-themes --stop-after-init
+$MULTIVERSEPATH/$2/odoo/odoo-bin -d "$1-$vnumber" -u all --addons-path=$MULTIVERSEPATH/$2/odoo/addons,$MULTIVERSEPATH/$2/enterprise,$MULTIVERSEPATH/$2/design-themes --stop-after-init
 
 # Remove symlink to upgrade repo.
 rm -f "$MULTIVERSEPATH/$2/odoo/odoo/addons/base/maintenance"
