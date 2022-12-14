@@ -14,5 +14,5 @@ do
 	else
 		echo "Pulling $(basename $stripped_repo)"
 	fi
-	git -C "$stripped_repo" pull > /dev/null
+	git -C "$stripped_repo" pull --rebase > /dev/null
 done
