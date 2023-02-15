@@ -5,9 +5,9 @@
 # Useful aliases
 alias oe-migrate="bash $ODOOHOME/utils/.migrate.sh"
 alias oe-odoo-bin="bash $ODOOHOME/utils/.odoo-bin.sh"
-alias oe-add-version="bash $ODOOHOME/utils/.add-version.sh"
-alias oe-rm-version="bash $ODOOHOME/utils/.remove-version.sh"
-alias oe-init-all-versions="bash $ODOOHOME/utils/.add-version.sh $(cat $ODOOHOME/utils/currently_used_versions.txt)"
+alias oe-debug-bin="bash $ODOOHOME/utils/.odoo-debug-bin.sh"
+alias oe-branch="bash $ODOOHOME/utils/.branch.sh"
+alias oe-init-all-versions="bash $ODOOHOME/utils/.branch.sh add $(cat $ODOOHOME/utils/currently_used_versions.txt)"
 alias oe-pull="bash $ODOOHOME/utils/.pull-all.sh"
 
 # Run support-tools

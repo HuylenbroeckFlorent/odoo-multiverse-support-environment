@@ -6,13 +6,21 @@ if [ -z ${MULTIVERSEPATH+x} ]; then
     exit 1
 fi
 
-for repo in $(find $ODOOHOME -mindepth 2 -name ".git" | sort)
+for repo in $(find $ODOOHOME -mindepth 2 -maxdepth 2 -name ".git")
 do
 	stripped_repo=${repo%."git"}
-	if [[ $stripped_repo =~ "$MULTIVERSEPATH".*$ ]]; then
-		echo "Pulling $(basename $(dirname $stripped_repo))/$(basename $stripped_repo)"
-	else
-		echo "Pulling $(basename $stripped_repo)"
-	fi
+	echo "Pulling $(basename $stripped_repo)"
 	git -C "$stripped_repo" pull --rebase > /dev/null
+done
+
+for repo in $(find $MULTIVERSEPATH -name ".git" | sort)
+do
+	stripped_repo=${repo%."git"}
+	version=$(basename $(dirname $stripped_repo))
+	if [[ $version =~ ^(master|saas-[0-9]+.[1-4]|[0-9]+.0)$ ]]; then
+		echo "Pulling $(basename $(dirname $stripped_repo))/$(basename $stripped_repo)"
+		git -C "$stripped_repo" pull --rebase > /dev/null
+	else
+		echo "Skipped $version"
+	fi
 done
