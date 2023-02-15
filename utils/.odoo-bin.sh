@@ -6,15 +6,14 @@ if [ -z ${MULTIVERSEPATH+x} ]; then
     exit 1
 fi
 
-if [[ $# -gt 0 ]] && [[ $1 =~ (saas-)?[0-9]+(.[0-9])? ]] && [[ "$(ls $MULTIVERSEPATH)" =~ ^.*"$1".*$ ]]; then
+if [[ $# -gt 0 ]] && [[ $1 =~ (master|saas-[0-9]+.[1-4]|[0-9]+.0) ]] && [[ "$(ls $MULTIVERSEPATH)" =~ ^.*"$1".*$ ]]; then
     version="$1"
-    args="${@:2}"
+    shift
 
-elif [[ "$(pwd)" =~ "$MULTIVERSEPATH"/(saas-)?[0-9]+(.[0-9])?/odoo ]]; then
-	version=$(pwd)
+elif [[ "$(pwd)" =~ "$MULTIVERSEPATH"/(master|saas-[0-9]+.[1-4]|[0-9]+.0)/odoo ]]; then
+    version=$(pwd)
     version=${version##$MULTIVERSEPATH/}
     version=${version%%/*}
-    args="$@"
 else
     echo "Usage:"
     echo "From outside of any version's odoo directory:"
@@ -26,6 +25,22 @@ else
     exit 1
 fi
 
-echo "Running from $MULTIVERSEPATH/$version/odoo/"
-$MULTIVERSEPATH/$version/odoo/odoo-bin $args "--addons-path=$MULTIVERSEPATH/$version/odoo/addons,$MULTIVERSEPATH/$version/enterprise,$MULTIVERSEPATH/$version/design-themes" --max-cron-threads=0
-# ,$ODOOHOME/internal/default,$ODOOHOME/internal/trial
+# Check for --debug flag
+debug=false
+for arg in $@
+do
+    shift 
+    if [[ "$arg" = "--debug" ]]; then 
+        debug=true 
+        continue
+    fi
+    set -- "$@" "$arg"
+done
+
+if [[ debug ]]; then
+    python3 -m debugpy --listen localhost:5678 $MULTIVERSEPATH/$version/odoo/odoo-bin $@ "--addons-path=$MULTIVERSEPATH/$version/odoo/addons,$MULTIVERSEPATH/$version/enterprise,$MULTIVERSEPATH/$version/design-themes" --max-cron-threads=0
+    # ,$ODOOHOME/internal/default,$ODOOHOME/internal/trial
+else
+    $MULTIVERSEPATH/$version/odoo/odoo-bin $@ "--addons-path=$MULTIVERSEPATH/$version/odoo/addons,$MULTIVERSEPATH/$version/enterprise,$MULTIVERSEPATH/$version/design-themes" --max-cron-threads=0
+    # ,$ODOOHOME/internal/default,$ODOOHOME/internal/trial
+fi
