@@ -1,8 +1,9 @@
 # Odoo multiverse support environment
 ## Setup
 
-1. Run ```.init.sh``` to set-up multiverse.
-2. Run ```oe``` for help.
+1. Run ```.prereqs.sh``` to check that your system has all the requirement to use the multiverse setup and support-tools installed.
+2. Run ```.init.sh``` to set-up multiverse.
+3. Run ```oe``` for help.
 
 ## Commands
 - `oe` - Display help menu.
