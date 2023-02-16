@@ -11,7 +11,7 @@
 - `oe-pull` - Pull (and rebase) all the repos in multiverse.
 - `oe-support` - Launches Odoo support-tools.
 - `oe-odoo-bin` - Launch an odoo-bin instance from any version in multiverse.
-- `oe-branch` - Manage Odoo branches in multiverse (add, remove, create).
+- `oe-branch` - Manage Odoo branches in multiverse (add existing, remove, create).
 - `oe-migrate` - Migrate a copy of an Odoo database to a newer version.
 
 Run `--help` on any command for help.
