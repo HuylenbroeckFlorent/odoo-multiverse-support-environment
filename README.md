@@ -8,7 +8,7 @@
 ## Commands
 - `oe` - Display help menu.
 - `cdo`/`cde` - Navigate to the 'odoo'/'enterprise' directory of any version in multiverse.
-- `oe-pull` - Pull all the repos in multiverse.
+- `oe-pull` - Pull (and rebase) all the repos in multiverse.
 - `oe-support` - Launches Odoo support-tools.
 - `oe-odoo-bin` - Launch an odoo-bin instance from any version in multiverse.
 - `oe-branch` - Manage Odoo branches in multiverse (add, remove, create).
