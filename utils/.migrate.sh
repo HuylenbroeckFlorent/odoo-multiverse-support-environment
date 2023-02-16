@@ -2,17 +2,33 @@
 
 ## TODO Check for intermediate versions
 
+migrate-help() {
+    echo "NAME"
+    echo -e "\t migrate - migrate a database to a newer version of Odoo."
+    echo "DESCRIPTION"
+    echo -e "\t Migrates a database to a specified version of Odoo. The original"
+    echo -e "\t database will be kept, a copy will be migrated."
+    echo "SYNOPSIS:"
+    echo -e '\t migrate <database> <target_version>'
+    echo -e "\t\t migrate a copy of the PSQL database 'database' to the version 'target_version'."
+}
+
 # Check for $MULTIVERSEPATH in ~/.bashrc
 if [ -z ${MULTIVERSEPATH+x} ]; then
     echo "\$MULTIVERSEPATH not found in $HOME/.bashrc, please run .init.sh"
     exit 1
 fi
 
+# Display help message if --help or -h is passed as argument.
+if [[ $# -gt 0 ]] && [[ $1 =~ ^("-h"|"--help")$ ]]; then
+    migrate-help
+    exit 0
+fi
+
 # Check args
 if [ "$#" -ne 2  ]; then
-    echo "oemigrate: Create a duplicate of <database> called <database-target_version> and migrate it to the target version."
-    echo ""
-    echo "Usage: oemigrate <database> <target_version>"
+    echo "Wrong number of arguments specified."
+    echp "Run --help for help"
     exit 1
 fi
 

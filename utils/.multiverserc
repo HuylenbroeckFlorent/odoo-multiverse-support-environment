@@ -3,11 +3,11 @@
 # cde, cdo, oe-odoo-bin and this file are based on BIB's scripts.
 
 # Useful aliases
+alias oe=oe-help
+alias oe-support=oe-s
 alias oe-migrate="bash $ODOOHOME/utils/.migrate.sh"
 alias oe-odoo-bin="bash $ODOOHOME/utils/.odoo-bin.sh"
-alias oe-debug-bin="bash $ODOOHOME/utils/.odoo-debug-bin.sh"
 alias oe-branch="bash $ODOOHOME/utils/.branch.sh"
-alias oe-init-all-versions="bash $ODOOHOME/utils/.branch.sh add $(cat $ODOOHOME/utils/currently_used_versions.txt)"
 alias oe-pull="bash $ODOOHOME/utils/.pull-all.sh"
 
 # Run support-tools
@@ -15,10 +15,28 @@ oe-s() {
     $ODOOHOME/support-tools/oe-support.py "$@"
 }
 
+cd-help() {
+    echo "NAME"
+    echo -e "\t $1 - navigate to any '$2' directory."
+    echo "DESCRIPTION"
+    echo -e "\t Navigates to any '$2' directory inside '$MULTIVERSEPATH'."
+    echo "SYNOPSIS"
+    echo -e "\t $1 <version>"
+    echo -e "\t\t Navigates to the $2/ directory of 'version' version of Odoo in '$MULTIVERSEPATH'."
+}
+
 # cd to given version's odoo directory
 cdo() {
+
+    # Display help message if --help or -h is passed as argument.
+    if [[ $# -gt 0 ]] && [[ $1 =~ ^("-h"|"--help")$ ]]; then
+        cd-help "cdo" "odoo"
+        return
+    fi
+
     if [ "$#" -ne 1  ]; then
-        echo "Illegal number of parameters"
+        echo "Wrong number of parameters."
+        echo "Type --help for help."
         return
     fi
     cd "$MULTIVERSEPATH/$1/odoo"
@@ -26,8 +44,16 @@ cdo() {
 
 # cd to given version's enterprise directory
 cde() {
+
+    # Display help message if --help or -h is passed as argument.
+    if [[ $# -gt 0 ]] && [[ $1 =~ ^("-h"|"--help")$ ]]; then
+        cd-help "cde" "enterprise"
+        return
+    fi
+
     if [ "$#" -ne 1  ]; then
-        echo "Illegal number of parameters"
+        echo "Wrong number of parameters."
+        echo "Type --help for help."
         return
     fi
     cd "$MULTIVERSEPATH/$1/enterprise"
@@ -35,33 +61,29 @@ cde() {
 
 # Help
 oe-help() {
-    echo "To change directory to any version's odoo/enterprise directory:"
-    echo "cdo <version>"
-    echo "cde <version>"
+    echo "OE"
+    echo -e "\t Tool that helps using and maintaining multiverse setup for Odoo technical support."
+    echo "COMMANDS"
+    echo -e "\t cdo/cde"
+    echo -e "\t\t Navigate to the 'odoo'/'enterprise' directory of any version in '$MULTIVERSEPATH'."
     echo 
-    echo "To run support-tools:"
-    echo "oe-s <args>"
+    echo -e "\t oe-pull"
+    echo -e "\t\t Pull all the repos in '$ODOOHOME'."
     echo 
-    echo "To run any odoo-bin:"
-    echo "oe-odoo-bin <version> <args>"
+    echo -e "\t oe-support"
+    echo -e "\t\t Launches Odoo support-tools."
     echo 
-    echo "To run a specific odoo-bin version from within its odoo directory:"
-    echo "oe-odoo-bin <args>"
+    echo -e "\t oe-odoo-bin"
+    echo -e "\t\t Launch an odoo-bin instance from any version in '$MULTIVERSEPATH'."
     echo 
-    echo "To add one/multiple versions of odoo to multiverse setup:"
-    echo "oe-add-version <version 1> ... <version n>"
-    echo
-    echo "To add all used versions at once:"
-    echo "oe-init-all-versions"
+    echo -e "\t oe-branch"
+    echo -e "\t\t Manage Odoo branches in '$MULTIVERSEPATH'."
     echo 
-    echo "To remove one/multiple versions of odoo from multiverse setup:"
-    echo "oe-rm-version <version 1> ... <version n>"
+    echo -e "\t oe-migrate"
+    echo -e "\t\t Migrate an Odoo database to a newer version."
     echo 
-    echo "To migrate a database to another version of Odoo"
-    echo "oe-migrate <database> <target-version>"
-    echo 
-    echo "To pull all your repositories (src/*, internal/, support-tools/"
-    echo "oe-pull"
+    echo "Run any command with --help for help."
+    return
 }
 
 export MULTIVERSEPATH="$ODOOHOME/src"
