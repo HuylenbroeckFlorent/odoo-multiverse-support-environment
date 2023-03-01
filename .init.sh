@@ -16,10 +16,14 @@ worktreesrc="$odoohome/src/master"
 ### Cloning and configuring odoo/support-tools
 echo -e "\t Init support-tools"
 git clone --branch "master" git@github.com:odoo/support-tools.git 2> /dev/null
-cd "$odoohome/support-tools"
 # Check if requirements are met, else install them.
-python3 -c "import pkg_resources; pkg_resources.require(open('requirements.txt',mode='r'))" || pip3 install -r "requirements.txt" # https://stackoverflow.com/a/65606063
 
+if ! [ -d "$odoohome/support-tools/.venv" ]; then
+	virtualenv $odoohome/support-tools/.venv >/dev/null
+fi
+source $odoohome/support-tools/.venv/bin/activate
+python3 -c "import pkg_resources; pkg_resources.require(open('$odoohome/support-tools/requirements.txt',mode='r'))" 2>&1 | grep -q "" && (echo -e "\t\t Installing support-tools requirements in virtual environment..." && pip3 install -r "$odoohome/support-tools/requirements.txt" >/dev/null ) 
+deactivate
 
 ### Cloning odoo/internal
 echo -e "\t Init internal"
@@ -42,34 +46,20 @@ for i in "odoo" "enterprise" "design-themes" "upgrade"
 do
 	git clone --branch "master" "git@github.com:odoo/$i.git" 2> /dev/null
 
-	if [[ $i =~ odoo$ ]]; then
-		pushd "$i" >/dev/null
-		git remote add odoo-dev git@github.com:odoo-dev/odoo.git 2> /dev/null
-		git remote rename origin odoo 2> /dev/null
-		git remote set-url --push odoo no_push
-		popd >/dev/null
-	fi
-
-	if [[ $i =~ enterprise$ ]]; then
-		pushd "$i" >/dev/null
-		git remote add enterprise-dev git@github.com:odoo-dev/enterprise.git 2> /dev/null
-		git remote rename origin enterprise 2> /dev/null
-		git remote set-url --push enterprise no_push
-		popd >/dev/null
-	fi
-
-	if [[ $i == "design-themes" ]]; then
-		pushd "$i" >/dev/null
-		git remote rename origin design-themes 2> /dev/null
-		git remote set-url --push design-themes no_push
-		popd >/dev/null
+	if [[ $i =~ (odoo|enterprise)$ ]]; then
+		git -C "$worktreesrc/$i" remote add $i-dev git@github.com:odoo-dev/$i.git 2> /dev/null
+		git -C "$worktreesrc/$i" remote rename origin $i 2> /dev/null
+		git -C "$worktreesrc/$i" remote set-url --push $i no_push
 	fi
 
 	# Check if requirements for odoo and upgrade are met, else install them.
 	if [[ $i =~ (odoo|upgrade)$ ]]; then
-		pushd "$i" >/dev/null
-		python3 -c "import pkg_resources; pkg_resources.require(open('requirements.txt',mode='r'))" || pip3 install -r "requirements.txt"
-		popd >/dev/null
+		if ! [ -d "$worktreesrc/$i/.venv" ]; then
+			virtualenv $worktreesrc/$i/.venv >/dev/null
+		fi
+		source $worktreesrc/$i/.venv/bin/activate
+		python3 -c "import pkg_resources; pkg_resources.require(open('$worktreesrc/$i/requirements.txt',mode='r'))" 2>&1 | grep -q "" && (echo -e "\t Installing $i requirements in virtual environment " && pip3 install -r "$worktreesrc/$i/requirements.txt" >/dev/null)
+		deactivate
 	fi
 done
 

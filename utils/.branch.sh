@@ -68,6 +68,15 @@ if [[ $action == "add" ]]; then
 		    do
 		        git -C "$MULTIVERSEPATH/master/$i" fetch "$i" "$version"
 		        git -C "$MULTIVERSEPATH/master/$i" worktree add --track -b "$version" "$MULTIVERSEPATH/$version/$i" "$i/$version"
+		        
+		        if [[ $i == "odoo" ]]; then
+		        	if ! [ -d "$MULTIVERSEPATH/$version/$i/.venv" ]; then
+						virtualenv $MULTIVERSEPATH/$version/$i/.venv >/dev/null
+					fi
+					source $MULTIVERSEPATH/$version/$i/.venv/bin/activate
+					python3 -c "import pkg_resources; pkg_resources.require(open('$MULTIVERSEPATH/$version/$i/requirements.txt',mode='r'))" 2>&1 | grep -q "" && (echo "Installing $i requirements in virtual environment..." && pip3 install -r "$MULTIVERSEPATH/$version/$i/requirements.txt" >/dev/null )
+					deactivate
+		        fi
 		    done
 		else
 			echo "Version '$version' not recognized"
@@ -90,6 +99,15 @@ if [[ $action == "new" ]]; then
 		    do
 		        git -C "$MULTIVERSEPATH/master/$i" fetch "$i" "$version"
 		        git -C "$MULTIVERSEPATH/master/$i" worktree add --track -b "$name" "$MULTIVERSEPATH/$name/$i" "$i/$version"
+
+		        if [[ $i == "odoo" ]]; then
+		        	if ! [ -d "$MULTIVERSEPATH/$name/$i/.venv" ]; then
+						virtualenv $MULTIVERSEPATH/$name/$i/.venv >/dev/null
+					fi
+					source $MULTIVERSEPATH/$name/$i/.venv/bin/activate
+					python3 -c "import pkg_resources; pkg_resources.require(open('$MULTIVERSEPATH/$name/$i/requirements.txt',mode='r'))" 2>&1 | grep -q "" && (echo "Installing $i requirements in virtual environment..." && pip3 install -r "$MULTIVERSEPATH/$name/$i/requirements.txt" >/dev/null ) 
+					deactivate
+		        fi
 		    done
 		else
 			echo "Aborted."
@@ -110,6 +128,7 @@ if [[ $action == "rm" ]]; then
 		    do
 		        git -C "$MULTIVERSEPATH/master/$i" worktree remove "$MULTIVERSEPATH/$name/$i" 2>/dev/null
 		        git -C "$MULTIVERSEPATH/master/$i" branch -d $name 2>/dev/null
+		        git -C "$MULTIVERSEPATH/master/$i" worktree prune 2>/dev/null
 		    done
 		    rm -r "$MULTIVERSEPATH/$name"
 		else
