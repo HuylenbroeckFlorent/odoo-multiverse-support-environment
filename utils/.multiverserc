@@ -4,14 +4,13 @@
 
 # Useful aliases
 alias oe=oe-help
-alias oe-support=oe-s
 alias oe-migrate="bash $ODOOHOME/utils/.migrate.sh"
 alias oe-odoo-bin="bash $ODOOHOME/utils/.odoo-bin.sh"
 alias oe-branch="bash $ODOOHOME/utils/.branch.sh"
 alias oe-pull="bash $ODOOHOME/utils/.pull-all.sh"
 
 # Run support-tools
-oe-s() {
+oe-support() {
     $ODOOHOME/support-tools/oe-support.py "$@"
 }
 
@@ -19,10 +18,10 @@ cd-help() {
     echo "NAME"
     echo -e "\t $1 - navigate to any '$2' directory."
     echo "DESCRIPTION"
-    echo -e "\t Navigates to any '$2' directory inside '$MULTIVERSEPATH'."
+    echo -e "\t Navigate to any '$2' directory inside '$MULTIVERSEPATH'."
     echo "SYNOPSIS"
     echo -e "\t $1 <version>"
-    echo -e "\t\t Navigates to the $2/ directory of 'version' version of Odoo in '$MULTIVERSEPATH'."
+    echo -e "\t\t Navigate to the $2/ directory of 'version' version of Odoo in '$MULTIVERSEPATH'."
 }
 
 # cd to given version's odoo directory
@@ -59,6 +58,22 @@ cde() {
     cd "$MULTIVERSEPATH/$1/enterprise"
 }
 
+cdsrc() {
+
+    # Display help message if --help or -h is passed as argument.
+    if [[ $# -gt 0 ]] && [[ $1 =~ ^("-h"|"--help")$ ]]; then
+        echo "NAME"
+        echo -e "\t cdsrc - navigate to multiverse src."
+        echo "DESCRIPTION"
+        echo -e "\t Navigate to $MULTIVERSEPATH."
+        echo "SYNOPSIS"
+        echo -e "\t cdsrc"
+        echo -e "\t\t Navigates to $MULTIVERSEPATH."
+        return
+    fi
+    cd "$MULTIVERSEPATH"
+}
+
 # Help
 oe-help() {
     echo "OE"
@@ -71,7 +86,7 @@ oe-help() {
     echo -e "\t\t Pull all the repos in '$ODOOHOME'."
     echo 
     echo -e "\t oe-support"
-    echo -e "\t\t Launches Odoo support-tools."
+    echo -e "\t\t Launch Odoo support-tools."
     echo 
     echo -e "\t oe-odoo-bin"
     echo -e "\t\t Launch an odoo-bin instance from any version in '$MULTIVERSEPATH'."
