@@ -31,7 +31,7 @@ cd "$odoohome"
 git clone --branch "master" git@github.com:odoo/internal.git 2> /dev/null
 $odoohome/support-tools/oe-support.py config internal "$odoohome/internal"
 psql -l | grep -q meta || createdb meta > /dev/null
-psql -l | grep -q meta && psql meta < $odoohome/internal/setup/meta.sql > /dev/null 2&>1
+psql -l | grep -q meta && psql meta < $odoohome/internal/setup/meta.sql > /dev/null 2>&1
 
 
 ### Creating multiverse worktree
