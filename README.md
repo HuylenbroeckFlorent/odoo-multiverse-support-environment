@@ -8,6 +8,7 @@
 ## Commands
 - `oe` - Display help menu.
 - `cdo`/`cde` - Navigate to the 'odoo'/'enterprise' directory of any version in multiverse.
+- `cdsrc` - Navigate to the multiverse worktree root.
 - `oe-pull` - Pull (and rebase) all the repos in multiverse.
 - `oe-support` - Launch Odoo support-tools.
 - `oe-odoo-bin` - Launch an odoo-bin instance from any version in multiverse.
