@@ -39,8 +39,8 @@ vnumber=${2%%".0"}
 echo "Copying database $1 to $1-$vnumber"
 
 # Drop database if it exists then (re-)create it.
-dropdb "$1-$2" 2> /dev/null
-createdb -T "$1" "$1-$2"
+dropdb "$1-$vnumber" 2> /dev/null
+createdb -T "$1" "$1-$vnumber"
 
 # Add symlink to upgrade repo.
 rm -f "$MULTIVERSEPATH/$2/odoo/odoo/addons/base/maintenance"
