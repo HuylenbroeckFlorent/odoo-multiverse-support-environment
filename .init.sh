@@ -16,14 +16,9 @@ worktreesrc="$odoohome/src/master"
 ### Cloning and configuring odoo/support-tools
 echo -e "\t Init support-tools"
 git clone --branch "master" git@github.com:odoo/support-tools.git 2> /dev/null
-# Check if requirements are met, else install them.
 
-if ! [ -d "$odoohome/support-tools/.venv" ]; then
-	virtualenv $odoohome/support-tools/.venv >/dev/null
-fi
-source $odoohome/support-tools/.venv/bin/activate
-python3 -c "import pkg_resources; pkg_resources.require(open('$odoohome/support-tools/requirements.txt',mode='r'))" 2>&1 | grep -q "" && (echo -e "\t\t Installing support-tools requirements in virtual environment..." && pip3 install -r "$odoohome/support-tools/requirements.txt" >/dev/null ) 
-deactivate
+# Check if requirements are met, else install them.
+python3 -c "import pkg_resources; pkg_resources.require(open('$odoohome/support-tools/requirements.txt',mode='r'))" 2>&1 | grep -q "" && (echo -e "\t\t Installing support-tools requirements..." && pip3 install -r "$odoohome/support-tools/requirements.txt" >/dev/null) 
 
 ### Cloning odoo/internal
 echo -e "\t Init internal"
@@ -54,12 +49,7 @@ do
 
 	# Check if requirements for odoo and upgrade are met, else install them.
 	if [[ $i =~ (odoo|upgrade)$ ]]; then
-		if ! [ -d "$worktreesrc/$i/.venv" ]; then
-			virtualenv $worktreesrc/$i/.venv >/dev/null
-		fi
-		source $worktreesrc/$i/.venv/bin/activate
-		python3 -c "import pkg_resources; pkg_resources.require(open('$worktreesrc/$i/requirements.txt',mode='r'))" 2>&1 | grep -q "" && (echo -e "\t Installing $i requirements in virtual environment " && pip3 install -r "$worktreesrc/$i/requirements.txt" >/dev/null)
-		deactivate
+		python3 -c "import pkg_resources; pkg_resources.require(open('$worktreesrc/$i/requirements.txt',mode='r'))" 2>&1 | grep -q "" && (echo -e "\t Installing $i requirements." && pip3 install -r "$worktreesrc/$i/requirements.txt" >/dev/null)
 	fi
 done
 

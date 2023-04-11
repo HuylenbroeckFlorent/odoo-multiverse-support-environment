@@ -17,7 +17,6 @@ py3_matching="Python 3.*$"
 if ! [[ "$(python3 --version)" =~ $py3_matching ]]; then
 	sudo apt install python3
 	sudo apt install python3-pip
-	pip3 install virtualenv
 fi
 
 # Checking for psql installation

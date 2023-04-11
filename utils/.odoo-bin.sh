@@ -57,14 +57,11 @@ do
 done
 
 # Launch command 
-source $MULTIVERSEPATH/$version/odoo/.venv/bin/activate
 if [[ debug ]]; then
-    pip3 list | grep -q "debugpy" || (echo "Debugpy not found in virtual environment. Installing..." && pip3 install debugpy >/dev/null) 2>/dev/null
+    pip3 list | grep -q "debugpy" || (echo "Debugpy not found. Installing..." && pip3 install debugpy >/dev/null) 2>/dev/null
     python3 -m debugpy --listen localhost:5678 $MULTIVERSEPATH/$version/odoo/odoo-bin $@ "--addons-path=$MULTIVERSEPATH/$version/odoo/addons,$MULTIVERSEPATH/$version/enterprise,$MULTIVERSEPATH/$version/design-themes" --max-cron-threads=0
 else
     $MULTIVERSEPATH/$version/odoo/odoo-bin $@ "--addons-path=$MULTIVERSEPATH/$version/odoo/addons,$MULTIVERSEPATH/$version/enterprise,$MULTIVERSEPATH/$version/design-themes" --max-cron-threads=0
 fi
-deactivate
-
 
 # (',$ODOOHOME/internal/default,$ODOOHOME/internal/trial' could be added to addons path)
