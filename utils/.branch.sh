@@ -13,7 +13,7 @@ branch-help() {
 	echo -e '\t\t create a new branch corresponding to each given version (Official Odoo versions).'
 	echo
 	echo -e '\t branch new <version> <name>'
-	echo -e "\t\t creates a new branch from version 'version' named 'name'."
+	echo -e "\t\t creates a new branch from version 'version' named 'version-name'."
 	echo
 	echo -e '\t branch rm <name> [names...]'
 	echo -e '\t\t deletes branches corresponding to each given branch name.'
@@ -89,7 +89,7 @@ if [[ $action == "new" ]]; then
 	if [[ $1 =~ (master|saas-[0-9]+.[1-4]|[0-9]+.0) ]] && [[ $# -gt 0 ]]; then
 		version=$1
 		shift
-		name=$1
+		name="$version-$1"
 		echo "Create a new $version branch named '$name' ? (y/n)"
 		read answer
 		positive_answers=(yes y ok oui Y YES OK)
