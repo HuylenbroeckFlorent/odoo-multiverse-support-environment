@@ -41,10 +41,11 @@ for i in "odoo" "enterprise" "design-themes" "upgrade"
 do
 	git clone --branch "master" "git@github.com:odoo/$i.git" 2> /dev/null
 
+	git -C "$worktreesrc/$i" remote rename origin $i 2> /dev/null
+	git -C "$worktreesrc/$i" remote set-url --push $i no_push
+
 	if [[ $i =~ (odoo|enterprise)$ ]]; then
 		git -C "$worktreesrc/$i" remote add $i-dev git@github.com:odoo-dev/$i.git 2> /dev/null
-		git -C "$worktreesrc/$i" remote rename origin $i 2> /dev/null
-		git -C "$worktreesrc/$i" remote set-url --push $i no_push
 	fi
 
 	# Check if requirements for odoo and upgrade are met, else install them.
