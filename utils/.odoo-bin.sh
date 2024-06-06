@@ -104,10 +104,12 @@ args=$@
 if [ "$odoofin" = true ]; then
     addonspath="${addonspath},$ODOOHOME/odoofin"
     args="${args} --unaccent --http-port 6969"
+else
+    args="${args} --max-cron-threads=0"
 fi
 
 # Build command
-commandline="$MULTIVERSEPATH/$version/odoo/odoo-bin $args $addonspath $upgradepath --max-cron-threads=0"
+commandline="$MULTIVERSEPATH/$version/odoo/odoo-bin $addonspath $upgradepath $args"
 
 if [ "$debug" = true ]; then
     pip3 list | grep -q "debugpy" || (echo "Debugpy not found. Installing..." && pip3 install debugpy >/dev/null) 2>/dev/null
