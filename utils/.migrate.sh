@@ -43,11 +43,15 @@ dropdb "$1-$vnumber" 2> /dev/null
 createdb -T "$1" "$1-$vnumber"
 
 # Add symlink to upgrade repo.
-rm -f "$MULTIVERSEPATH/$2/odoo/odoo/addons/base/maintenance"
-ln -s "$MULTIVERSEPATH/master/upgrade/" "$MULTIVERSEPATH/$2/odoo/odoo/addons/base/maintenance"
+# rm -f "$MULTIVERSEPATH/$2/odoo/odoo/addons/base/maintenance"
+# ln -s "$MULTIVERSEPATH/master/upgrade/" "$MULTIVERSEPATH/$2/odoo/odoo/addons/base/maintenance"
 
 # Migrate the db.
-$MULTIVERSEPATH/$2/odoo/odoo-bin -d "$1-$vnumber" -u all --addons-path=$MULTIVERSEPATH/$2/odoo/addons,$MULTIVERSEPATH/$2/enterprise,$MULTIVERSEPATH/$2/design-themes --stop-after-init
+$MULTIVERSEPATH/$2/odoo/odoo-bin    -d "$1-$vnumber" \
+                                    -u all \
+                                    --addons-path=$MULTIVERSEPATH/$2/odoo/addons,$MULTIVERSEPATH/$2/enterprise,$MULTIVERSEPATH/$2/design-themes \
+                                    --upgrade-path=$MULTIVERSEPATH/master/upgrade-util/src,$MULTIVERSEPATH/master/upgrade/migrations \
+                                    --stop-after-init
 
 # Remove symlink to upgrade repo.
-rm -f "$MULTIVERSEPATH/$2/odoo/odoo/addons/base/maintenance"
+# rm -f "$MULTIVERSEPATH/$2/odoo/odoo/addons/base/maintenance"

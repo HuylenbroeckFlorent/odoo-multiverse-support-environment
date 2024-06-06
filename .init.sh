@@ -36,8 +36,8 @@ $odoohome/support-tools/oe-support.py config worktree-src "$worktreesrc"
 $odoohome/support-tools/oe-support.py config src "$odoohome/src"
 cd $worktreesrc
 
-# Cloning odoo/odoo, odoo/enterprise, odoo/design-themes, odoo/upgrade master branches
-for i in "odoo" "enterprise" "design-themes" "upgrade"
+# Cloning odoo/odoo, odoo/enterprise, odoo/design-themes, odoo/upgrade odoo/upgrade-util master branches
+for i in "odoo" "enterprise" "design-themes" "upgrade" "upgrade-util"
 do
 	git clone --branch "master" "git@github.com:odoo/$i.git" 2> /dev/null
 
