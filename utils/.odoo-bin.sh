@@ -103,8 +103,8 @@ args=$@
 
 if [ "$odoofin" = true ]; then
     addonspath="${addonspath},$ODOOHOME/odoofin"
-    args="${args} --unaccent --http-port 6969"
-else
+    args="${args} --unaccent --http-port=6969 --proxy-mode --gevent-port=8073 --workers=2"
+elif [ "$export_cla" = false ]; then
     args="${args} --max-cron-threads=0"
 fi
 
