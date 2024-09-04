@@ -28,7 +28,6 @@ $odoohome/support-tools/oe-support.py config internal "$odoohome/internal"
 psql -l | grep -q meta || createdb meta > /dev/null
 psql -l | grep -q meta && psql meta < $odoohome/internal/setup/meta.sql > /dev/null 2>&1
 
-
 ### Creating multiverse worktree
 echo -e "\t Init multiverse worktree"
 mkdir -p $worktreesrc
@@ -41,9 +40,9 @@ for i in "odoo" "enterprise" "design-themes" "upgrade"
 do
 	git clone --branch "master" "git@github.com:odoo/$i.git" 2> /dev/null
 
+	git -C "$worktreesrc/$i" remote rename origin $i 2> /dev/null
 	if [[ $i =~ (odoo|enterprise)$ ]]; then
 		git -C "$worktreesrc/$i" remote add $i-dev git@github.com:odoo-dev/$i.git 2> /dev/null
-		git -C "$worktreesrc/$i" remote rename origin $i 2> /dev/null
 		git -C "$worktreesrc/$i" remote set-url --push $i no_push
 	fi
 
@@ -52,7 +51,6 @@ do
 		python3 -c "import pkg_resources; pkg_resources.require(open('$worktreesrc/$i/requirements.txt',mode='r'))" 2>&1 | grep -q "" && (echo -e "\t Installing $i requirements." && pip3 install -r "$worktreesrc/$i/requirements.txt" >/dev/null)
 	fi
 done
-
 
 # Exporting to ~/.bashrc
 echo -e "\t Exporting to $HOME/.bashrc"
@@ -63,3 +61,5 @@ echo "source $odoohome/utils/.multiverserc" >> $HOME/.bashrc
 source $HOME/.bashrc
 
 echo "Done"
+
+# sudo apt install python3-cffi
