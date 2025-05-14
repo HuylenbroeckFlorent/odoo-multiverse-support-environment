@@ -11,18 +11,17 @@ odoo-bin-help() {
     echo -e "\t that specific version of odoo-bin. Version 'odoofin' can also be used to launch"
     echo -e "\t an odooFin server."
     echo "SYNOPSIS:"
-    echo -e '\t odoo-bin <version> [--debug] [--odoofin] [args...]'
+    echo -e '\t odoo-bin <version> [--debug] [args...]'
     echo -e "\t\t Launches 'version' version of odoo-bin with args as parameters."
     echo
-    echo -e '\t odoo-bin odoofin [--debug] [--odoofin] [args...]'
+    echo -e '\t odoo-bin odoofin [--debug] [args...]'
     echo -e "\t\t Launches an odoofin server with args as parameters."
     echo
-    echo -e '\t odoo-bin [--debug] [--odoofin] [args...]'
+    echo -e '\t odoo-bin [--debug] [args...]'
     echo -e "\t\t Launches the version of odoo-bin in the current directory with args as parameters."
     echo 
     echo "OPTIONS"
     echo -e "\t --debug \tlaunches odoo-bin as a debugpy process that can be listened to on port 5678."
-    echo -e "\t --odoofin \texports the REQUESTS_CA_BUNDLE so the current odoo instance can be used with an odooFin server."
     echo -e "\t\t\tThis flag is ignored when launching an odooFin server."
     exit 1
 }
@@ -66,22 +65,12 @@ fi
 
 # Check for flags
 # --debug to start a debugpy environment
-# --odoofin to ensure the export of REQUESTS_CA_BUNDLE to use with odooFin server
 debug=false
-export_cla=false
 for arg in $@
 do
     shift
     if [[ "$arg" = "--debug" ]]; then 
         debug=true 
-        continue
-    fi
-    if [[ "$arg" = "--odoofin" ]]; then 
-        if [ "$odoofin" = false ]; then
-            export_cla=true 
-        else
-            echo "Flag --odoofin ignored for launching odoofin server."
-        fi
         continue
     fi
     set -- "$@" "$arg"
@@ -102,9 +91,9 @@ $MULTIVERSEPATH/master/upgrade/migrations"
 args=$@
 
 if [ "$odoofin" = true ]; then
-    addonspath="${addonspath},$ODOOHOME/odoofin"
-    args="${args} --unaccent --http-port=6969 --proxy-mode --gevent-port=8073 --workers=2"
-elif [ "$export_cla" = false ]; then
+    addonspath="${addonspath},$ODOOHOME/odoofin/odoo/addons"
+    args="${args} --db_user ${USER}_odoofin --db_host localhost --db_password odoo --unaccent --http-port=6969 --proxy-mode --gevent-port=8073 --workers=2"
+else
     args="${args} --max-cron-threads=0"
 fi
 
@@ -117,17 +106,5 @@ if [ "$debug" = true ]; then
 fi
 
 # Launch command
-if [ "$export_cla" = true ]; then
-    export REQUESTS_CA_BUNDLE=/etc/ssl/certs/nginx-selfsigned.crt
-    echo "exported REQUESTS_CA_BUNDLE from /etc/ssl/certs/nginx-selfsigned.crt"
-    trap "echo Unset REQUESTS_CA_BUNDLE before killing.; unset REQUESTS_CA_BUNDLE" 2 # SIGINT
-else 
-    unset REQUESTS_CA_BUNDLE
-fi
 echo -e "Running the following command\n\t$commandline"
 eval $commandline
-
-# Cleanup after execution
-if [ "$export_cla" = true ]; then
-    unset REQUESTS_CA_BUNDLE
-fi

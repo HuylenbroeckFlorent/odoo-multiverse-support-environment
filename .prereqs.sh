@@ -37,10 +37,14 @@ if ! [[ "$(psql --version)" =~ $psql_matching ]]; then
 fi
 
 # Checking for psql user and its roles
-if ! [[ "$(psql postgres -tAc "SELECT * FROM pg_roles WHERE rolname='$USER'")" =~ ^"$USER"\|t\|t\|(t|f|)\|t\|t\|(t|f|)\|(-?[0-9]*|)\|(\**|)\|(t|f|)\|(t|f|)\|(t|f|)\|([0-9]*|)$ ]]; then
-	sudo -u postgres psql -U postgres -c "CREATE USER $USER;"
-	sudo -u postgres psql -U postgres -c "ALTER USER $USER SUPERUSER CREATEDB INHERIT LOGIN"
-	createdb "$USER"
+if ! [[ "$(psql postgres -tAc "SELECT * FROM pg_roles WHERE rolname='${USER}_support'")" =~ ^"${USER}_support"\|f\|t\|t\|t\|(t|f|)\|f\|(-?[0-9]*|)\|(\**|)\|(t|f|)\|f\|(t|f|)\|([0-9]*|)$ ]]; then
+	sudo -u postgres psql -U postgres -c "CREATE USER ${USER}_support;"
+	sudo -u postgres psql -U postgres -c "ALTER ROLE ${USER}_support NOSUPERUSER NOREPLICATION NOBYPASSRLS CREATEROLE CREATEDB INHERIT;"
+	createdb "${USER}_support"
+fi
+if ! [[ "$(psql postgres -tAc "SELECT * FROM pg_roles WHERE rolname='${USER}_odoofin'")" =~ ^"${USER}_odoofin"\|t\|t\|(t|f|)\|t\|t\|(t|f|)\|(-?[0-9]*|)\|(\**|)\|(t|f|)\|(t|f|)\|(t|f|)\|([0-9]*|)$ ]]; then
+	sudo -u postgres psql -U postgres -c "CREATE USER ${USER}_odoofin;"
+	sudo -u postgres psql -U postgres -c "ALTER USER ${USER}_odoofin SUPERUSER CREATEDB INHERIT LOGIN"
 fi
 
 # Checking for trial psql user
@@ -48,4 +52,4 @@ psql postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='trial'" | grep -q 1 ||
 
 echo "Done"
 
-# sudo apt install libpq-dev python3-cffi libsasl2-dev libldap2-dev libsass
+sudo apt install libpq-dev python3-cffi libsasl2-dev libldap2-dev
