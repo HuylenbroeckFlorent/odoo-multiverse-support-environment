@@ -1,6 +1,6 @@
 #! /bin/bash
 
-ODOOFIN_VERSION="17.0"
+ODOOFIN_VERSION="18.0"
 
 odoo-bin-help() {
     echo "NAME"
