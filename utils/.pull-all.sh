@@ -22,10 +22,10 @@ if [[ $# -gt 0 ]] && [[ $1 =~ ^("-h"|"--help")$ ]]; then
     exit 0
 fi
 
-for repo in $(find $ODOOHOME -mindepth 2 -maxdepth 2 -name ".git")
+for repo in $(find $ODOOHOME -mindepth 2 -maxdepth 4 -not -path "$MULTIVERSEPATH/*" -name ".git")
 do
 	stripped_repo=${repo%."git"}
-	echo "Pulling $(basename $stripped_repo)"
+	echo "Pulling ${stripped_repo##$ODOOHOME/}"
 	git -C "$stripped_repo" pull --rebase > /dev/null
 done
 
@@ -34,7 +34,7 @@ do
 	stripped_repo=${repo%."git"}
 	version=$(basename $(dirname $stripped_repo))
 	if [[ $version =~ ^(master|saas-[0-9]+.[1-4]|[0-9]+.0)$ ]]; then
-		echo "Pulling $(basename $(dirname $stripped_repo))/$(basename $stripped_repo)"
+		echo "Pulling ${stripped_repo##$MULTIVERSEPATH/}"
 		git -C "$stripped_repo" pull --rebase > /dev/null
 	else
 		echo "Skipped $version"
