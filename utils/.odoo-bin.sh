@@ -98,7 +98,7 @@ else
 fi
 
 # Build command
-commandline="$MULTIVERSEPATH/$version/odoo/odoo-bin $addonspath $upgradepath $args"
+commandline="$MULTIVERSEPATH/$version/odoo/odoo-bin $addonspath $args $upgradepath"
 
 if [ "$debug" = true ]; then
     pip3 list | grep -q "debugpy" || (echo "Debugpy not found. Installing..." && pip3 install debugpy >/dev/null) 2>/dev/null
