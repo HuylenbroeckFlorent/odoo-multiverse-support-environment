@@ -46,7 +46,7 @@ if [[ $# -gt 0 ]] && [[ $1 =~ (master|saas-[0-9]+.[1-4]|[0-9]+.0) ]] && [[ "$(ls
 elif [[ $# -gt 0 ]] && [[ $1 =~ odoofin ]]; then
     if [[ "$(ls $MULTIVERSEPATH)" =~ ^.*"$ODOOFIN_VERSION".*$ ]]; then
         odoofin=true
-        version="17.0"
+        version=$ODOOFIN_VERSION
         shift
     else
         echo "Odoo version $ODOOFIN_VERSION not found in $MULTIVERSEPATH. This is required to run odooFin server."
