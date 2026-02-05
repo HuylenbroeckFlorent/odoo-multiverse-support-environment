@@ -42,7 +42,12 @@ cdo() {
         echo "Type --help for help."
         return
     fi
-    cd "$MULTIVERSEPATH/$1/odoo"
+
+    if [[ "$1" =~ odoofin ]]; then
+        cd "$ODOOHOME/odoofin/odoo/addons"
+    else
+        cd "$MULTIVERSEPATH/$1/odoo"
+    fi
 }
 
 # cd to given version's enterprise directory
