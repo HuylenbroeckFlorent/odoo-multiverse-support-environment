@@ -25,8 +25,7 @@ psql -l | grep -q meta && psql meta < $odoohome/internal/setup/meta.sql > /dev/n
 echo -e "\t Cloning odoo/odoofin"
 git clone --branch "$odoofin_version" "git@github.com:odoo/odoofin.git" odoofin/odoo/addons 2> /dev/null
 if [[ ! -d $odoohome/.venv/src/$odoofin_version ]]; then
-	python3 -m venv "$odoohome/.venv/src/$odoofin_version"
-    sed 's/include-system-site-packages = false/include-system-site-packages = true/' "$odoohome/.venv/src/$odoofin_version/pyvenv.cfg" >/dev/null
+	python3 -m venv --system-site-packages "$odoohome/.venv/src/$odoofin_version"
 fi
 source $odoohome/.venv/src/$odoofin_version/bin/activate
 python3 -c "import pkg_resources; pkg_resources.require(open('$odoohome/odoofin/odoo/addons/requirements.txt',mode='r'))" 2>&1 | grep -q "" && (echo -e "\t\t Installing odoofin requirements" && pip3 install -r "$odoohome/odoofin/odoo/addons/requirements.txt" >/dev/null) 
@@ -39,8 +38,7 @@ git clone --branch "master" git@github.com:odoo/support-tools.git 2> /dev/null
 # Configuring support-tools.
 echo -e "\t Configuring support-tools"
 if [[ ! -d $odoohome/.venv/support-tools ]]; then
-	python3 -m venv "$odoohome/.venv/support-tools"
-    sed 's/include-system-site-packages = false/include-system-site-packages = true/' "$odoohome/.venv/support-tools/pyvenv.cfg" >/dev/null
+	python3 -m venv --system-site-packages "$odoohome/.venv/support-tools"
 fi	
 source $odoohome/.venv/support-tools/bin/activate
 python3 -c "import pkg_resources; pkg_resources.require(open('$odoohome/support-tools/requirements.txt',mode='r'))" 2>&1 | grep -q "" && (echo -e "\t\t Installing support-tools requirements" && pip3 install -r "$odoohome/support-tools/requirements.txt" >/dev/null) 
@@ -72,8 +70,7 @@ do
 	# Check if requirements for odoo and upgrade are met, else install them.
 	if [[ $i =~ (odoo|upgrade)$ ]]; then
 		if [[ ! -d $odoohome/.venv/src/master ]]; then
-    		python3 -m venv "$odoohome/.venv/src/master"
-    		sed 's/include-system-site-packages = false/include-system-site-packages = true/' "$odoohome/.venv/src/master/pyvenv.cfg" >/dev/null
+    		python3 -m venv --system-site-packages "$odoohome/.venv/src/master"
     	fi
 		source $odoohome/.venv/src/master/bin/activate
 		python3 -c "import pkg_resources; pkg_resources.require(open('$worktreesrc/$i/requirements.txt',mode='r'))" 2>&1 | grep -q "" && (echo -e "\t\t Installing $i requirements" && pip3 install -r "$worktreesrc/$i/requirements.txt" >/dev/null)
