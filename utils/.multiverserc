@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export MULTIVERSEPATH="$ODOOHOME/src"
+
 # cde, cdo, oe-odoo-bin and this file are based on BIB's scripts.
 
 # Useful aliases
@@ -102,5 +104,3 @@ oe-help() {
     echo "Run any command with --help for help."
     return
 }
-
-export MULTIVERSEPATH="$ODOOHOME/src"

@@ -40,11 +40,13 @@ fi
 if ! [[ "$(psql postgres -tAc "SELECT * FROM pg_roles WHERE rolname='${USER}'")" =~ ^"${USER}"\|f\|t\|t\|t\|(t|f|)\|f\|(-?[0-9]*|)\|(\**|)\|(t|f|)\|f\|(t|f|)\|([0-9]*|)$ ]]; then
 	sudo -u postgres psql -U postgres -c "CREATE USER ${USER};"
 	sudo -u postgres psql -U postgres -c "ALTER ROLE ${USER} NOSUPERUSER NOREPLICATION NOBYPASSRLS CREATEROLE CREATEDB INHERIT;"
+	sudo -u postgres psql -U postgres -c "ALTER USER ${USER} WITH PASSWORD 'odoo'"
 	createdb "${USER}_support"
 fi
 if ! [[ "$(psql postgres -tAc "SELECT * FROM pg_roles WHERE rolname='${USER}_odoofin'")" =~ ^"${USER}_odoofin"\|t\|t\|(t|f|)\|t\|t\|(t|f|)\|(-?[0-9]*|)\|(\**|)\|(t|f|)\|(t|f|)\|(t|f|)\|([0-9]*|)$ ]]; then
 	sudo -u postgres psql -U postgres -c "CREATE USER ${USER}_odoofin;"
 	sudo -u postgres psql -U postgres -c "ALTER USER ${USER}_odoofin SUPERUSER CREATEDB INHERIT LOGIN"
+	sudo -u postgres psql -U postgres -c "ALTER USER ${USER}_odoofin WITH PASSWORD 'odoo'"
 fi
 
 # Checking for trial psql user

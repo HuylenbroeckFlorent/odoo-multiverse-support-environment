@@ -1,7 +1,5 @@
 #! /bin/bash
 
-ODOOFIN_VERSION="19.0"
-
 odoo-bin-help() {
     echo "NAME"
     echo -e '\t odoo-bin - launch any version of odoo-bin.'
@@ -88,25 +86,26 @@ upgradepath="--upgrade-path=\
 $MULTIVERSEPATH/master/upgrade-util/src,\
 $MULTIVERSEPATH/master/upgrade/migrations"
 
+# Build command.
 args=$@
-
+commandline=""
 if [ "$odoofin" = true ]; then
     addonspath="${addonspath},$ODOOHOME/odoofin/odoo/addons"
     args="${args} --db_user ${USER}_odoofin --db_host localhost --db_password odoo --unaccent --http-port=6969 --proxy-mode --gevent-port=8073 --workers=2"
+    commandline="$ODOOHOME/odoofin/odoo/odoofin-bin $addonspath $args $upgradepath"
 else
     args="${args} --max-cron-threads=0"
+    commandline="$MULTIVERSEPATH/$version/odoo/odoo-bin $addonspath $args $upgradepath"
 fi
 
-# Build command
-commandline="$MULTIVERSEPATH/$version/odoo/odoo-bin $addonspath $args $upgradepath"
-
+# Wrap command with debugpy if --debug.
+source $ODOOHOME/.venv/src/$version/bin/activate
 if [ "$debug" = true ]; then
     pip3 list | grep -q "debugpy" || (echo "Debugpy not found. Installing..." && pip3 install debugpy >/dev/null) 2>/dev/null
     commandline="python3 -m debugpy --listen localhost:5678 ${commandline}"
 fi
 
 # Launch command
-source $ODOOHOME/.venv/src/$version/bin/activate
 echo -e "Running the following command\n\t$commandline"
 eval $commandline
 deactivate

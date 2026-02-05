@@ -1,3 +1,7 @@
 src/
 support-tools/
 internal/
+odoofin/*
+!odoofin/odoo/odoofin-bin
+*.code-workspace
+.venv/
