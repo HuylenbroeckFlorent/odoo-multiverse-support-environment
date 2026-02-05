@@ -70,7 +70,13 @@ if [[ $action == "add" ]]; then
 		        git -C "$MULTIVERSEPATH/master/$i" worktree add --track -b "$version" "$MULTIVERSEPATH/$version/$i" "$i/$version"
 		        
 		        if [[ $i == "odoo" ]]; then
+		        	if [[ ! -d $ODOOHOME/.venv/src/$version ]]; then
+		        		python3 -m venv "$ODOOHOME/.venv/src/$version"
+		        	fi
+		        	source "$ODOOHOME/.venv/src/$version/bin/activate"
 					python3 -c "import pkg_resources; pkg_resources.require(open('$MULTIVERSEPATH/$version/$i/requirements.txt',mode='r'))" 2>&1 | grep -q "" && (echo "Installing $i requirements..." && pip3 install -r "$MULTIVERSEPATH/$version/$i/requirements.txt" >/dev/null)
+					deactivate
+					sed 's/include-system-site-packages = false/include-system-site-packages = true/' "$ODOOHOME/.venv/src/$version/pyvenv.cfg" >/dev/null
 		        fi
 		    done
 		else
@@ -96,8 +102,14 @@ if [[ $action == "new" ]]; then
 		        git -C "$MULTIVERSEPATH/master/$i" worktree add --track -b "$name" "$MULTIVERSEPATH/$name/$i" "$i/$version"
 
 		        if [[ $i == "odoo" ]]; then
-					python3 -c "import pkg_resources; pkg_resources.require(open('$MULTIVERSEPATH/$name/$i/requirements.txt',mode='r'))" 2>&1 | grep -q "" && (echo "Installing $i requirements..." && pip3 install -r "$MULTIVERSEPATH/$name/$i/requirements.txt" >/dev/null) 
-		        fi
+					if [[ ! -d $ODOOHOME/.venv/src/$name ]]; then
+		        		python3 -m venv "$ODOOHOME/.venv/src/$name"
+		        	fi
+		        	source "$ODOOHOME/.venv/src/$name/bin/activate"
+					python3 -c "import pkg_resources; pkg_resources.require(open('$MULTIVERSEPATH/$version/$i/requirements.txt',mode='r'))" 2>&1 | grep -q "" && (echo "Installing $i requirements..." && pip3 install -r "$MULTIVERSEPATH/$version/$i/requirements.txt" >/dev/null)
+					deactivate
+					sed 's/include-system-site-packages = false/include-system-site-packages = true/' "$ODOOHOME/.venv/src/$name/pyvenv.cfg" >/dev/null
+				fi
 		    done
 		else
 			echo "Aborted."
@@ -111,18 +123,22 @@ fi
 
 # Remove branch(es)
 if [[ $action == "rm" ]]; then
-	for name in $@
+	for version in $@
 	do
-		if [[ -d $MULTIVERSEPATH/$name ]]; then
+		if [[ -d $MULTIVERSEPATH/$version ]]; then
 			for i in "odoo" "enterprise" "design-themes"
 		    do
-		        git -C "$MULTIVERSEPATH/master/$i" worktree remove "$MULTIVERSEPATH/$name/$i" 2>/dev/null
-		        git -C "$MULTIVERSEPATH/master/$i" branch -d $name 2>/dev/null
+		        git -C "$MULTIVERSEPATH/master/$i" worktree remove "$MULTIVERSEPATH/$version/$i" 2>/dev/null
+		        git -C "$MULTIVERSEPATH/master/$i" branch -d $version 2>/dev/null
 		        git -C "$MULTIVERSEPATH/master/$i" worktree prune 2>/dev/null
 		    done
-		    rm -r "$MULTIVERSEPATH/$name"
+		    rm -r "$MULTIVERSEPATH/$version"
+		    if [[ -d $ODOOHOME/.venv/src/$version ]] && [[ $version != $ODOOFIN_VERSION ]]; then
+        		rm -rf "$ODOOHOME/.venv/src/$version"
+        		echo "Removed virtual environment at '$ODOOHOME/.venv/src/$version'."
+        	fi
 		else
-			echo "Branch '$name' not found in the worktree."
+			echo "Branch '$version' not found in the worktree."
 		fi
 	done
 fi

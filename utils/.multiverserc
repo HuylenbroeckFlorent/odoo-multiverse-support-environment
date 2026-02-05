@@ -11,7 +11,9 @@ alias oe-pull="bash $ODOOHOME/utils/.pull-all.sh"
 
 # Run support-tools
 oe-support() {
+    source $ODOOHOME/.venv/support-tools/bin/activate
     $ODOOHOME/support-tools/oe-support.py "$@"
+    deactivate
 }
 
 cd-help() {

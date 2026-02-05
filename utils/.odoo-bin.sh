@@ -1,6 +1,6 @@
 #! /bin/bash
 
-ODOOFIN_VERSION="18.0"
+ODOOFIN_VERSION="19.0"
 
 odoo-bin-help() {
     echo "NAME"
@@ -106,5 +106,7 @@ if [ "$debug" = true ]; then
 fi
 
 # Launch command
+source $ODOOHOME/.venv/src/$version/bin/activate
 echo -e "Running the following command\n\t$commandline"
 eval $commandline
+deactivate

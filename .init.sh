@@ -31,8 +31,10 @@ psql -l | grep -q meta && psql meta < $odoohome/internal/setup/meta.sql > /dev/n
 ### Creating multiverse worktree
 echo -e "\t Init multiverse worktree"
 mkdir -p $worktreesrc
+mkdir -p $odoohome/.venv/src
 $odoohome/support-tools/oe-support.py config worktree-src "$worktreesrc"
 $odoohome/support-tools/oe-support.py config src "$odoohome/src"
+$odoohome/support-tools/oe-support.py config venvs-dir "$odoohome/.venv/src"
 cd $worktreesrc
 
 # Cloning odoo/odoo, odoo/enterprise, odoo/design-themes, odoo/upgrade odoo/upgrade-util master branches
