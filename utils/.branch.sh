@@ -72,11 +72,11 @@ if [[ $action == "add" ]]; then
 		        if [[ $i == "odoo" ]]; then
 		        	if [[ ! -d $ODOOHOME/.venv/src/$version ]]; then
 		        		python3 -m venv "$ODOOHOME/.venv/src/$version"
+		        		sed 's/include-system-site-packages = false/include-system-site-packages = true/' "$ODOOHOME/.venv/src/$version/pyvenv.cfg" >/dev/null
 		        	fi
 		        	source "$ODOOHOME/.venv/src/$version/bin/activate"
 					python3 -c "import pkg_resources; pkg_resources.require(open('$MULTIVERSEPATH/$version/$i/requirements.txt',mode='r'))" 2>&1 | grep -q "" && (echo "Installing $i requirements..." && pip3 install -r "$MULTIVERSEPATH/$version/$i/requirements.txt" >/dev/null)
 					deactivate
-					sed 's/include-system-site-packages = false/include-system-site-packages = true/' "$ODOOHOME/.venv/src/$version/pyvenv.cfg" >/dev/null
 		        fi
 		    done
 		else
@@ -104,11 +104,11 @@ if [[ $action == "new" ]]; then
 		        if [[ $i == "odoo" ]]; then
 					if [[ ! -d $ODOOHOME/.venv/src/$name ]]; then
 		        		python3 -m venv "$ODOOHOME/.venv/src/$name"
+		        		sed 's/include-system-site-packages = false/include-system-site-packages = true/' "$ODOOHOME/.venv/src/$name/pyvenv.cfg" >/dev/null
 		        	fi
 		        	source "$ODOOHOME/.venv/src/$name/bin/activate"
 					python3 -c "import pkg_resources; pkg_resources.require(open('$MULTIVERSEPATH/$version/$i/requirements.txt',mode='r'))" 2>&1 | grep -q "" && (echo "Installing $i requirements..." && pip3 install -r "$MULTIVERSEPATH/$version/$i/requirements.txt" >/dev/null)
 					deactivate
-					sed 's/include-system-site-packages = false/include-system-site-packages = true/' "$ODOOHOME/.venv/src/$name/pyvenv.cfg" >/dev/null
 				fi
 		    done
 		else
